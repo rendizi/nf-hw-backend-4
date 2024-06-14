@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
 export const Signup = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -21,7 +23,7 @@ export const Signup = () => {
       return;
     }
     try {
-      const response = await axios.post("http://localhost:4000/api/v5/users/register", {
+      const response = await axios.post("https://nf-hw-backend-4-production.up.railway.app/api/v5/u/register", {
         username,
         password
       }, {
@@ -29,8 +31,22 @@ export const Signup = () => {
           "Content-Type": "application/json"
         }
       });
-      if (response.status === 200) {
-                toast("success");
+      if (response.status === 201) {
+        toast("success");
+        const another = await axios.post("https://nf-hw-backend-4-production.up.railway.app/api/v5/u/login", {
+          username,
+          password
+        }, {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        if (another.status === 200){
+          localStorage.setItem("token", another.data.accessToken)
+          localStorage.setItem("refresh", another.data.refreshToken)
+          localStorage.setItem("username", another.data.user.username)
+          window.location.href = "/"
+        }
       } else {
         toast(`smthing went wrong: ${response.data.message}`);
       }

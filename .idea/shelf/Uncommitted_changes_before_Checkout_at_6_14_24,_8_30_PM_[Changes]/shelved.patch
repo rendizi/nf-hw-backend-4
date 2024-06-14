@@ -1,0 +1,194 @@
+Index: src/routes/users/types/response.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>export interface User {\n  id: number\n  username: string\n  password: string\n  profileImage: string \n  bio: string \n}\n
+===================================================================
+diff --git a/src/routes/users/types/response.ts b/src/routes/users/types/response.ts
+--- a/src/routes/users/types/response.ts	
++++ b/src/routes/users/types/response.ts	
+@@ -1,4 +1,4 @@
+-export interface User {
++export interface Artist {
+   id: number
+   username: string
+   password: string
+Index: src/routes/users/auth-service.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { CreateUserDto, UpdateUserDto } from './dtos/CreateUser.dto'\nimport { IUser } from './models/User'\nimport UserModel from './models/User'\nimport bcrypt from 'bcryptjs'\nimport jwt from 'jsonwebtoken'\nimport dotenv from 'dotenv'\nimport RefreshTokenModel from './models/RefreshToken'\nimport {User} from './types/response'\nimport { IFavorites } from './models/Favorites'\nimport FavoriteModel from './models/Favorites'\n\ndotenv.config()\n\nclass AuthService {\n  private readonly jwtSecret = process.env.JWT_SECRET!\n  private readonly jwtRefreshSecret = process.env.JWT_REFRESH_SECRET!\n\n  async registerUser(createUserDto: CreateUserDto): Promise<IUser> {\n    const { password, username } = createUserDto\n    const hashedPassword = await bcrypt.hash(password, 10)\n\n    const newUser = new UserModel({\n      username,\n      password: hashedPassword\n    })\n\n    await newUser.save()\n    return newUser\n  }\n\n  async loginUser(\n    username: string,\n    password: string\n  ): Promise<{\n    user: IUser\n    accessToken: string\n    refreshToken: string\n  } | null> {\n    const user = await UserModel.findOne({ username })\n    if (!user) return null\n\n    const isPasswordValid = await bcrypt.compare(password, user.password)\n    if (!isPasswordValid) return null\n\n    const accessToken = this.generateJwt(user)\n    const refreshToken = this.generateRefreshToken(user)\n\n    const refreshTokenDoc = new RefreshTokenModel({\n      token: refreshToken,\n      user: user._id\n    })\n    await refreshTokenDoc.save()\n\n    return { user, accessToken, refreshToken }\n  }\n\n  private generateJwt(user: IUser): string {\n    return jwt.sign({ id: user._id, username: user.username }, this.jwtSecret, {\n      expiresIn: '1h'\n    })\n  }\n\n  private generateRefreshToken(user: IUser): string {\n    return jwt.sign(\n      { id: user._id, username: user.username },\n      this.jwtRefreshSecret,\n      { expiresIn: '7d' }\n    )\n  }\n\n  verifyJwt(token: string): any {\n    try {\n      return jwt.verify(token, this.jwtSecret)\n    } catch (err) {\n      return null\n    }\n  }\n\n  verifyRefreshToken(token: string): any {\n    try {\n      return jwt.verify(token, this.jwtRefreshSecret)\n    } catch (err) {\n      return null\n    }\n  }\n\n  async refreshToken(\n    oldToken: string\n  ): Promise<{ accessToken: string; refreshToken: string } | null> {\n    const payload = this.verifyRefreshToken(oldToken)\n    if (!payload) return null\n\n    const user = await UserModel.findById(payload.id)\n    if (!user) return null\n\n    const newAccessToken = this.generateJwt(user)\n    const newRefreshToken = this.generateRefreshToken(user)\n\n    const refreshTokenDoc = new RefreshTokenModel({\n      token: newRefreshToken,\n      user: user._id\n    })\n    await refreshTokenDoc.save()\n\n    await RefreshTokenModel.deleteOne({ token: oldToken })\n\n    return { accessToken: newAccessToken, refreshToken: newRefreshToken }\n  }\n\n  async getProfile(username: string): Promise<User | null> {\n    try {\n      const resp = await UserModel.findOne({ username }).exec();\n      return resp ? resp.toObject() : null; \n    } catch (err) {\n      console.error('Error fetching profile:', err);\n      return null; \n    }\n  }\n\n  async updateUser(username: string, updateFields: UpdateUserDto): Promise<boolean> {\n    try {\n      const updateResult = await UserModel.updateOne({ username }, { ...updateFields }).exec();\n      if (updateResult.modifiedCount === 1){\n      return true }\n      else{\n        return false\n      }\n    } catch (err) {\n      console.error('Error updating user profile:', err);\n      return false;\n    }\n  }\n\n  async like(userId: string, songId: string):Promise<IFavorites>{\n    const newFav = new FavoriteModel({\n      userId,\n      songId\n    })\n\n    await newFav.save()\n    return newFav\n  }\n\n  async unlike(userId: string, songId: string): Promise<IFavorites | null> {\n    const removedFav = await FavoriteModel.findOneAndDelete({\n        userId,\n        songId\n    });\n\n    return removedFav;\n}\n\n}\n\nexport default AuthService\n
+===================================================================
+diff --git a/src/routes/users/auth-service.ts b/src/routes/users/auth-service.ts
+--- a/src/routes/users/auth-service.ts	
++++ b/src/routes/users/auth-service.ts	
+@@ -1,13 +1,15 @@
+ import { CreateUserDto, UpdateUserDto } from './dtos/CreateUser.dto'
+-import { IUser } from './models/User'
++import { IArtist } from './models/Artist'
+ import UserModel from './models/User'
+ import bcrypt from 'bcryptjs'
+ import jwt from 'jsonwebtoken'
+ import dotenv from 'dotenv'
+ import RefreshTokenModel from './models/RefreshToken'
+-import {User} from './types/response'
++import {Artist} from './types/response'
+ import { IFavorites } from './models/Favorites'
+ import FavoriteModel from './models/Favorites'
++import ArtisModel from './models/Artist'
++import {IUser} from './models/User'
+ 
+ dotenv.config()
+ 
+@@ -23,6 +25,19 @@
+       username,
+       password: hashedPassword
+     })
++
++    await newUser.save()
++    return newUser
++  }
++
++  async registerArtist(createUserDto: CreateUserDto): Promise<IArtist>{
++    const { password, username } = createUserDto
++    const hashedPassword = await bcrypt.hash(password, 10)
++
++    const newUser = new ArtisModel({
++      username,
++      password: hashedPassword
++    })
+ 
+     await newUser.save()
+     return newUser
+@@ -107,26 +122,27 @@
+     return { accessToken: newAccessToken, refreshToken: newRefreshToken }
+   }
+ 
+-  async getProfile(username: string): Promise<User | null> {
++  async getProfile(username: string): Promise<Artist | null> {
+     try {
+-      const resp = await UserModel.findOne({ username }).exec();
++      const resp = await ArtisModel.findOne({ username }).exec();
+       return resp ? resp.toObject() : null; 
+     } catch (err) {
+       console.error('Error fetching profile:', err);
+       return null; 
+     }
+   }
++  
+ 
+-  async updateUser(username: string, updateFields: UpdateUserDto): Promise<boolean> {
++  async updateArtist(username: string, updateFields: UpdateUserDto): Promise<boolean> {
+     try {
+-      const updateResult = await UserModel.updateOne({ username }, { ...updateFields }).exec();
++      const updateResult = await ArtisModel.updateOne({ username }, { ...updateFields }).exec();
+       if (updateResult.modifiedCount === 1){
+       return true }
+       else{
+         return false
+       }
+     } catch (err) {
+-      console.error('Error updating user profile:', err);
++      console.error('Error updating artist profile:', err);
+       return false;
+     }
+   }
+Index: src/routes/users/auth-controller.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Request, Response } from 'express'\nimport { CreateUserDto, UpdateUserDto } from './dtos/CreateUser.dto'\nimport AuthService from './auth-service'\nimport S3Service from '../../cloud_storage/s3'\n\nclass AuthController {\n  private authService: AuthService\n  private s3: S3Service\n\n  constructor(authService: AuthService) {\n    this.authService = authService\n    this.s3 = S3Service.getInstance()\n  }\n\n  registerUser = async (req: Request, res: Response): Promise<void> => {\n    try {\n      const createUserDto: CreateUserDto = req.body\n      const user = await this.authService.registerUser(createUserDto)\n      res.status(201).json(user)\n    } catch (err) {\n      res.status(500).json({ message: 'Error registering user' })\n    }\n  }\n\n  loginUser = async (req: Request, res: Response): Promise<void> => {\n    try {\n      const { username, password } = req.body\n      const result = await this.authService.loginUser(username, password)\n      if (!result) {\n        res.status(401).json({ message: 'Invalid email or password' })\n        return\n      }\n      res.status(200).json(result)\n    } catch (err) {\n      res.status(500).json({ message: 'Error logging in' })\n    }\n  }\n\n  refreshToken = async (req: Request, res: Response): Promise<void> => {\n    try {\n      const { token } = req.body\n      const result = await this.authService.refreshToken(token)\n      if (!result) {\n        res.status(401).json({ message: 'Invalid or expired refresh token' })\n        return\n      }\n      res.status(200).json(result)\n    } catch (err) {\n      res.status(500).json({ message: 'Error refreshing token' })\n    }\n  }\n\n  getProfile = async (req: Request, res: Response):Promise<void> => {\n    try{\n      const username = req.params.username \n      const result = await this.authService.getProfile(username)\n      if (result){\n        res.status(200).send(result)\n        return \n      }else{\n        res.status(400).send({message: \"not found\"})\n      }\n    }\n    catch (err){\n      res.status(400).send({err: err})\n    }\n  }\n\n  updateProfile = async(req: Request, res: Response):Promise<void> => {\n    try{\n      const username = (req as any).username\n      if (!username){\n        res.status(400).send({\"message\":\"username is not provided\"})\n        return \n      }\n      const updateFields: UpdateUserDto = {}\n      const formData = req.body\n      if (formData.bio){\n        updateFields.bio = formData.bio as string \n      }\n      if (formData.profileImage){\n        const file = (req as any).file \n        if (file){\n          const filePath = file.path; \n          const key = `profileImages/${username}`;\n          await this.s3.uploadFile(filePath, key); \n          updateFields.profileImage = key;\n        }\n      }\n\n      const resp = await this.authService.updateUser(username, updateFields)\n      if (resp){\n        res.status(200).send({message:'Profile updated successfully'});\n      }\n      else{\n        res.status(400).send({message:'Profile updated successfully'});\n      }\n    }catch (err) {\n      console.error('Error updating profile:', err);\n      res.status(500).send('Failed to update profile');\n    }\n  }\n\n  //set favorite\n  like = async(req: Request, res: Response):Promise<void> => {\n    try{\n      const userId = (req as any)._id \n      if (!userId){\n        res.status(400).send({\"message\":\"userId is not provided\"})\n        return \n      }\n      const songId = req.params.id\n      const fav = await this.authService.like(userId, songId)\n      res.status(200).send(fav)\n    }\n    catch (err){\n      res.status(500).send('Failed to like song');\n    }\n  }\n\n  //remove favorite \n  unlike = async(req: Request, res: Response):Promise<void> => {\n    try{\n      const userId = (req as any)._id \n      if (!userId){\n        res.status(400).send({\"message\":\"userId is not provided\"})\n        return \n      }\n      const songId = req.params.id as string \n      const fav = await this.authService.unlike(userId, songId)\n      res.status(200).send(fav)\n    }\n    catch (err){\n      res.status(500).send('Failed to like song');\n    }\n  }\n }\n\nexport default AuthController\n
+===================================================================
+diff --git a/src/routes/users/auth-controller.ts b/src/routes/users/auth-controller.ts
+--- a/src/routes/users/auth-controller.ts	
++++ b/src/routes/users/auth-controller.ts	
+@@ -22,6 +22,16 @@
+     }
+   }
+ 
++  createArtist = async(req: Request, res: Response): Promise<void> => {
++    try {
++      const createUserDto: CreateUserDto = req.body
++      const user = await this.authService.registerArtist(createUserDto)
++      res.status(201).json(user)
++    } catch (err) {
++      res.status(500).json({ message: 'Error registering user' })
++    }
++  }
++
+   loginUser = async (req: Request, res: Response): Promise<void> => {
+     try {
+       const { username, password } = req.body
+@@ -88,7 +98,7 @@
+         }
+       }
+ 
+-      const resp = await this.authService.updateUser(username, updateFields)
++      const resp = await this.authService.updateArtist(username, updateFields)
+       if (resp){
+         res.status(200).send({message:'Profile updated successfully'});
+       }
+Index: src/routes/users/auth-router.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Router } from 'express'\nimport { authMiddleware } from '../../middlewares/auth-middleware'\nimport AuthController from './auth-controller'\nimport AuthService from './auth-service'\nimport multer from 'multer';\n\nconst authRouter = Router()\n\nconst authService = new AuthService()\nconst authController = new AuthController(authService)\n\nconst upload = multer({ dest: 'profileImages/' });\n\nauthRouter.post('/register', authController.registerUser)\nauthRouter.post('/login', authController.loginUser)\nauthRouter.post('/refresh-token', authController.refreshToken)\nauthRouter.get('/:username', authController.getProfile)\nauthRouter.put('/:username', upload.single('file'),authMiddleware, authController.updateProfile)\n\nauthRouter.post('/like/:id', authMiddleware, authController.like)\nauthRouter.post('/unlike/:id', authMiddleware, authController.unlike)\n\n\nauthRouter.get('/protected', authMiddleware, (req, res) => {\n  res.json({ message: 'You have access to this route!' })\n})\n\nexport default authRouter\n
+===================================================================
+diff --git a/src/routes/users/auth-router.ts b/src/routes/users/auth-router.ts
+--- a/src/routes/users/auth-router.ts	
++++ b/src/routes/users/auth-router.ts	
+@@ -11,12 +11,17 @@
+ 
+ const upload = multer({ dest: 'profileImages/' });
+ 
++// User 
+ authRouter.post('/register', authController.registerUser)
+ authRouter.post('/login', authController.loginUser)
+ authRouter.post('/refresh-token', authController.refreshToken)
++
++// Artist
++authRouter.post('/artist', authController.createArtist)
+ authRouter.get('/:username', authController.getProfile)
+ authRouter.put('/:username', upload.single('file'),authMiddleware, authController.updateProfile)
+ 
++// Like
+ authRouter.post('/like/:id', authMiddleware, authController.like)
+ authRouter.post('/unlike/:id', authMiddleware, authController.unlike)
+ 
+Index: src/routes/users/models/User.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import mongoose, { Document, Schema } from 'mongoose';\n\nexport interface IUser extends Document {\n  username: string;\n  password: string;\n  songs: string[];\n  bio: string;\n  profileImage: string;\n}\n\nconst UserSchema: Schema = new Schema({\n  username: { type: String, required: true, unique: true },\n  password: { type: String, required: true },\n  bio: { type: String, default: 'Bahauddin top' }, \n  profileImage: { type: String, default: '' } ,\n});\n\nexport default mongoose.model<IUser>('SpotifyUser', UserSchema);\n
+===================================================================
+diff --git a/src/routes/users/models/User.ts b/src/routes/users/models/User.ts
+--- a/src/routes/users/models/User.ts	
++++ b/src/routes/users/models/User.ts	
+@@ -3,16 +3,11 @@
+ export interface IUser extends Document {
+   username: string;
+   password: string;
+-  songs: string[];
+-  bio: string;
+-  profileImage: string;
+ }
+ 
+ const UserSchema: Schema = new Schema({
+   username: { type: String, required: true, unique: true },
+   password: { type: String, required: true },
+-  bio: { type: String, default: 'Bahauddin top' }, 
+-  profileImage: { type: String, default: '' } ,
+ });
+ 
+ export default mongoose.model<IUser>('SpotifyUser', UserSchema);
+Index: src/routes/global-router.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Router } from 'express'\nimport authRouter from './users/auth-router'\n// other routers can be imported here\n\nconst globalRouter = Router()\n\nglobalRouter.use('/users', authRouter)\n\nexport default globalRouter\n
+===================================================================
+diff --git a/src/routes/global-router.ts b/src/routes/global-router.ts
+--- a/src/routes/global-router.ts	
++++ b/src/routes/global-router.ts	
+@@ -4,6 +4,6 @@
+ 
+ const globalRouter = Router()
+ 
+-globalRouter.use('/users', authRouter)
++globalRouter.use('/u', authRouter)
+ 
+ export default globalRouter
