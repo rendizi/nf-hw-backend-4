@@ -12,7 +12,7 @@ class PlaylistController{
     
       createPlaylist = async(req: Request, res: Response) => {
         try{
-        const author = (req as any).username 
+        const author = (req as any)._id 
         if (!author) {
             res.status(400).send({ message: "username is not provided" });
             return;
