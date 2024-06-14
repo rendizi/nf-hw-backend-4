@@ -1,11 +1,43 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from "axios";
 
 export const Signup = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (password !== confirmPassword) {
+      toast("passwords do not match");
+      return;
+    }
+    try {
+      const response = await axios.post("http://localhost:4000/api/v5/users/register", {
+        username,
+        password
+      }, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      if (response.status === 200) {
+                toast("success");
+      } else {
+        toast(`smthing went wrong: ${response.data.message}`);
+      }
+    } catch (error) {
+      console.error("smthing went wrong:", error);
+      toast("smthign went wrong, lease try again later.");
+    }
   };
 
   return (
@@ -19,13 +51,16 @@ export const Signup = () => {
           />
           <h1 className="text-3xl font-bold mt-4">Sign Up</h1>
         </div>
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-sm font-medium">Email</label>
+            <label className="block text-sm font-medium">Username</label>
             <input
-              type="email"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="w-full p-3 mt-1 text-black rounded-lg border border-gray-300 focus:outline-none focus:ring focus:border-blue-300"
-              placeholder="Enter your email"
+              placeholder="Enter your username"
+              required
             />
           </div>
           <div>
@@ -33,8 +68,11 @@ export const Signup = () => {
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full p-3 mt-1 text-black rounded-lg border border-gray-300 focus:outline-none focus:ring focus:border-blue-300"
                 placeholder="Create a password"
+                required
               />
               <button
                 type="button"
@@ -46,14 +84,15 @@ export const Signup = () => {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium">
-              Confirm Password
-            </label>
+            <label className="block text-sm font-medium">Confirm Password</label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full p-3 mt-1 text-black rounded-lg border border-gray-300 focus:outline-none focus:ring focus:border-blue-300"
                 placeholder="Confirm your password"
+                required
               />
               <button
                 type="button"
@@ -80,6 +119,7 @@ export const Signup = () => {
           </p>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
