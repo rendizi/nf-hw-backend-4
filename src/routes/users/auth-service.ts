@@ -1,10 +1,13 @@
-import { CreateUserDto } from './dtos/CreateUser.dto'
+import { CreateUserDto, UpdateUserDto } from './dtos/CreateUser.dto'
 import { IUser } from './models/User'
 import UserModel from './models/User'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import RefreshTokenModel from './models/RefreshToken'
+import {User} from './types/response'
+import { IFavorites } from './models/Favorites'
+import FavoriteModel from './models/Favorites'
 
 dotenv.config()
 
@@ -13,11 +16,10 @@ class AuthService {
   private readonly jwtRefreshSecret = process.env.JWT_REFRESH_SECRET!
 
   async registerUser(createUserDto: CreateUserDto): Promise<IUser> {
-    const { email, password, username } = createUserDto
+    const { password, username } = createUserDto
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const newUser = new UserModel({
-      email,
       username,
       password: hashedPassword
     })
@@ -27,14 +29,14 @@ class AuthService {
   }
 
   async loginUser(
-    email: string,
+    username: string,
     password: string
   ): Promise<{
     user: IUser
     accessToken: string
     refreshToken: string
   } | null> {
-    const user = await UserModel.findOne({ email })
+    const user = await UserModel.findOne({ username })
     if (!user) return null
 
     const isPasswordValid = await bcrypt.compare(password, user.password)
@@ -53,14 +55,14 @@ class AuthService {
   }
 
   private generateJwt(user: IUser): string {
-    return jwt.sign({ id: user._id, email: user.email }, this.jwtSecret, {
+    return jwt.sign({ id: user._id, username: user.username }, this.jwtSecret, {
       expiresIn: '1h'
     })
   }
 
   private generateRefreshToken(user: IUser): string {
     return jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, username: user.username },
       this.jwtRefreshSecret,
       { expiresIn: '7d' }
     )
@@ -104,6 +106,50 @@ class AuthService {
 
     return { accessToken: newAccessToken, refreshToken: newRefreshToken }
   }
+
+  async getProfile(username: string): Promise<User | null> {
+    try {
+      const resp = await UserModel.findOne({ username }).exec();
+      return resp ? resp.toObject() : null; 
+    } catch (err) {
+      console.error('Error fetching profile:', err);
+      return null; 
+    }
+  }
+
+  async updateUser(username: string, updateFields: UpdateUserDto): Promise<boolean> {
+    try {
+      const updateResult = await UserModel.updateOne({ username }, { ...updateFields }).exec();
+      if (updateResult.modifiedCount === 1){
+      return true }
+      else{
+        return false
+      }
+    } catch (err) {
+      console.error('Error updating user profile:', err);
+      return false;
+    }
+  }
+
+  async like(userId: string, songId: string):Promise<IFavorites>{
+    const newFav = new FavoriteModel({
+      userId,
+      songId
+    })
+
+    await newFav.save()
+    return newFav
+  }
+
+  async unlike(userId: string, songId: string): Promise<IFavorites | null> {
+    const removedFav = await FavoriteModel.findOneAndDelete({
+        userId,
+        songId
+    });
+
+    return removedFav;
+}
+
 }
 
 export default AuthService
