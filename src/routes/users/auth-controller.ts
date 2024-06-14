@@ -22,6 +22,16 @@ class AuthController {
     }
   }
 
+  registerArtist = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const createUserDto: CreateUserDto = req.body
+      const user = await this.authService.createArtist(createUserDto)
+      res.status(201).json(user)
+    } catch (err) {
+      res.status(500).json({ message: 'Error registering user' })
+    }
+  }
+
   loginUser = async (req: Request, res: Response): Promise<void> => {
     try {
       const { username, password } = req.body
@@ -68,32 +78,28 @@ class AuthController {
 
   updateProfile = async(req: Request, res: Response):Promise<void> => {
     try{
-      const username = (req as any).username
-      if (!username){
-        res.status(400).send({"message":"username is not provided"})
-        return 
-      }
+      const username = req.params.username 
       const updateFields: UpdateUserDto = {}
       const formData = req.body
       if (formData.bio){
         updateFields.bio = formData.bio as string 
       }
-      if (formData.profileImage){
+      if ((req as any).file){
         const file = (req as any).file 
         if (file){
           const filePath = file.path; 
-          const key = `profileImages/${username}`;
-          await this.s3.uploadFile(filePath, key); 
-          updateFields.profileImage = key;
+          const key = `profileImages/${username}.png`;
+          const url = await this.s3.uploadFile(filePath, key); 
+          updateFields.profileImage = url;
         }
       }
 
-      const resp = await this.authService.updateUser(username, updateFields)
+      const resp = await this.authService.updateArtist(username, updateFields)
       if (resp){
         res.status(200).send({message:'Profile updated successfully'});
       }
       else{
-        res.status(400).send({message:'Profile updated successfully'});
+        res.status(400).send({message:'Profile is not updated successfully'});
       }
     }catch (err) {
       console.error('Error updating profile:', err);
@@ -114,7 +120,7 @@ class AuthController {
       res.status(200).send(fav)
     }
     catch (err){
-      res.status(500).send('Failed to like song');
+      res.status(500).send(err);
     }
   }
 
@@ -133,6 +139,55 @@ class AuthController {
     catch (err){
       res.status(500).send('Failed to like song');
     }
+  }
+
+  liked = async(req: Request, res: Response):Promise<void> => {
+    try {
+      const userId = (req as any)._id; 
+
+      if (!userId) {
+        res.status(400).send({ message: "userId is not provided" });
+        return;
+      }
+
+      let page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
+      let limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 10;
+
+      if (page < 1){
+        page = 1
+      }
+      if (limit < 1){
+        limit = 1
+      }
+
+      const likes = await this.authService.liked(userId, page, limit);
+
+      res.status(200).send(likes);
+    } catch (err) {
+      res.status(400).send({ message: `${err}` });
+    }
+  }
+
+  searchArtist = async(req: Request, res: Response):Promise<void> => {
+    try{
+    let page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
+    let limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 10;
+  
+    if (page < 1){
+      page = 1
+    }
+    if (limit < 1){
+      limit = 1
+    }
+
+    const query = req.query.query as string 
+
+    const resp = await this.authService.searchArtist(query, page, limit)
+    res.status(200).send(resp)}
+    catch (err){
+      res.status(400).send({message:`${err}`})
+    }
+
   }
  }
 

@@ -14,11 +14,15 @@ const upload = multer({ dest: 'profileImages/' });
 authRouter.post('/register', authController.registerUser)
 authRouter.post('/login', authController.loginUser)
 authRouter.post('/refresh-token', authController.refreshToken)
+
 authRouter.get('/:username', authController.getProfile)
-authRouter.put('/:username', upload.single('file'),authMiddleware, authController.updateProfile)
+authRouter.post('/artist', authController.registerArtist)
+authRouter.post('/search', authController.searchArtist)
+authRouter.put('/:username', upload.single('profileImage'), authController.updateProfile)
 
 authRouter.post('/like/:id', authMiddleware, authController.like)
 authRouter.post('/unlike/:id', authMiddleware, authController.unlike)
+authRouter.post('/liked', authMiddleware, authController.liked)
 
 
 authRouter.get('/protected', authMiddleware, (req, res) => {

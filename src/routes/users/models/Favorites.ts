@@ -6,8 +6,8 @@ export interface IFavorites extends Document {
 }
 
 const FavoritesSchema: Schema = new Schema({
-  userId: { type: String, required: true},
-  songid: {type: String, required: true}
+  userId: {type: Schema.Types.ObjectId, ref: 'SpotifyUser', required: true},
+  songId: {type: Schema.Types.ObjectId, ref: 'SpotifySong', required: true}
 });
 
 export default mongoose.model<IFavorites>('SpotifyFavorites', FavoritesSchema);

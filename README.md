@@ -7,23 +7,23 @@ you. The task is to make your own spotify clone. Here we gooo
 
 ### Tasks
 
-- [ ] Create a CRUD for songs with cloud storage
+- [x] Create a CRUD for songs with cloud storage
 - [ ] Create a front for song implementation(take data from backend)
-- [ ] Implement user authentication and authorization
+- [x] Implement user authentication and authorization
 
 ## 🥈 Medium Level
 
 ### Tasks
 
-- [ ] Add artits detailed description(with photo in cloud storage and songs)
-- [ ] Edit profile(with photo in cloud storage)
-- [ ] Implement search functionality for songs and artists
+- [x] Add artits detailed description(with photo in cloud storage and songs)
+- [x] Edit profile(with photo in cloud storage)
+- [x] Implement search functionality for songs and artists
 
 ## 🥇 Hard Level
 
 ### Tasks
 
-- [ ] Add sharing songs with using websokets like in Spotify(like currently
+- [x] Add sharing songs with using websokets like in Spotify(like currently
       listening)
 
 ## 🦅 LEGENDARY Level
