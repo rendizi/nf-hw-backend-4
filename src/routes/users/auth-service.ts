@@ -207,7 +207,7 @@ class AuthService {
   }
 
   async artistsSongs(_id: string){
-    const resp = await Song.find({_id})
+    const resp = await Song.find({author: _id})
     return resp 
   }
 
