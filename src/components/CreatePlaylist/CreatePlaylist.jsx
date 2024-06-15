@@ -11,7 +11,7 @@ const CreatePlaylist = () => {
         const sme = async () => {
             const token = localStorage.getItem("token")
             try{
-                const resp = await axios.post("https://nf-hw-backend-4-production.up.railway.app/api/v5/u/protected", null, {
+                await axios.post("https://nf-hw-backend-4-production.up.railway.app/api/v5/u/protected", null, {
                     headers: { Authorization: `${token}` }
                 });
                 setNoLogin(false)
@@ -25,7 +25,7 @@ const CreatePlaylist = () => {
         e.preventDefault()
         const token = localStorage.getItem("token")
         try{
-            const resp = await axios.post(`https://nf-hw-backend-4-production.up.railway.app/api/v5/p/create`,{title,description}, {headers:{Authorization: token}})
+            await axios.post(`https://nf-hw-backend-4-production.up.railway.app/api/v5/p/create`,{title,description}, {headers:{Authorization: token}})
             toast("Success")
             console.log("Success")
         }

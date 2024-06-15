@@ -8,7 +8,7 @@ const CreateArtist = () => {
     const sendReq = async(e) => {
         e.preventDefault()
         try{
-            const resp = await axios.post(`https://nf-hw-backend-4-production.up.railway.app/api/v5/u/artist`,{username,password:"l"})
+            await axios.post(`https://nf-hw-backend-4-production.up.railway.app/api/v5/u/artist`,{username,password:"l"})
             toast("Success")
             console.log("Success")
         }

@@ -35,9 +35,7 @@ const EditArtist = ({_id}) => {
         }
     };
 
-    const handleDelete = () => {
-        
-    }
+
 
     return (
         <div className="hero">
@@ -76,13 +74,7 @@ const EditArtist = ({_id}) => {
                             >
                                 {isLoading ? 'Loading...' : 'Update'}
                             </button>
-                            <button
-                                type="button"
-                                className={`btn btn-error mt-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                disabled={isLoading}
-                            >
-                                {isLoading ? 'Loading...' : 'Delete'}
-                            </button>
+                            
                         </div>
                     </form>
                 </div>

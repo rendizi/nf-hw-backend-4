@@ -28,7 +28,7 @@ export default function UsersActivity({socket}) {
       socket.off("listens-to");
       socket.off("stop-listens-to");
     };
-  }, [socket]); 
+  }, [socket,listensList]); 
 
   useEffect(()=>{
     console.log(listensList)

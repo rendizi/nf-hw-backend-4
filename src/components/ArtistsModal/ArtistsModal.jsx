@@ -5,13 +5,13 @@ import { toast } from "react-toastify";
 const ArtistsModal = () => {
     const [artists, setArtists] = useState(null);
     const [page, setPage] = useState(1); 
-    const [limit, setLimit] = useState(4); 
+    const limit = 4
     const [query, setQuery] = useState('')
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const resp = await axios.post(`https://nf-hw-backend-4-production.up.railway.app/api/v5/u/search?page=${page}&limit=${limit}&query=${query}`);
+                const resp = await axios.post(`https://nf-hw-backend-4-production.up.railway.app/api/v5/u/search?page=${page}&limit=${limit}}`);
                 console.log(resp.data, "Data Received"); 
                 setArtists(resp.data);
             } catch (err) {
@@ -32,8 +32,6 @@ const ArtistsModal = () => {
         }
     };
 
-    const handleCardClick = (artistId) => {
-    };
 
     const handleNextPage = () => {
         setPage(page + 1);

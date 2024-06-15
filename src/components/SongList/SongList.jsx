@@ -44,7 +44,7 @@ const SongList = ({ id, info, setSong }) => {
         <div>
             {info && (
     <div className="flex items-center" >
-        <img src={info.image} className="w-14 h-14 rounded-full" alt="Info Image" />
+        <img src={info.image} className="w-14 h-14 rounded-full" />
         <div className="ml-2">
             <p className="font-bold">{info.title}</p>
             <p>{info.description}</p>

@@ -21,11 +21,13 @@ export const PlaylistsCard = ({ id, setSong }) => {
       }
     }
     sm()
-  },[])
+  },[id])
 
   useEffect(()=>{
     console.log(songs)
   },[songs])
+
+  
 
 
   return (
@@ -50,6 +52,7 @@ export const PlaylistsCard = ({ id, setSong }) => {
             <h5 className="font-medium text-gray-100 mb-2">{el.title}</h5>
             <p className="text-gray-400 text-sm">{el.description}</p>
           </div>
+          
         </Link>
       ))}
     </div>

@@ -9,13 +9,7 @@ export const ArtistsCard = ({ title, description, imageUrl,_id ,setSong}) => {
   return (
     <button
       className="bg-main-lg rounded-lg p-4 hover:bg-main-lgHover transition-all group"
-      onClick={()=>{
-        try{
-          document.getElementById(`another-${_id}`).show()
-        }catch (err){
-          toast.error(err)
-        }
-      }}
+      
     >
       <div className="mb-4 relative flex justify-center items-center" >
         <img
@@ -38,7 +32,13 @@ export const ArtistsCard = ({ title, description, imageUrl,_id ,setSong}) => {
           <RiEdit2Fill />
         </button>
       </div>
-      <div>
+      <div onClick={()=>{
+        try{
+          document.getElementById(`another-${_id}`).show()
+        }catch (err){
+          toast.error(err)
+        }
+      }}>
         <h5 className="font-medium text-gray-100 mb-2">{title}</h5>
         <p className="text-gray-400 text-sm w-[18ch]">{description}</p>
       </div>
