@@ -84,15 +84,15 @@ class AuthController {
       if (formData.bio){
         updateFields.bio = formData.bio as string 
       }
-      if ((req as any).file){
-        const file = (req as any).file 
-        if (file){
-          const filePath = file.path; 
+      if ((req as any).files) {
+        const files = (req as any).files;
+        if (files.previewImage){
+          const filePath = files.previewImage[0].path; 
           const key = `profileImages/${username}.png`;
           const url = await this.s3.uploadFile(filePath, key); 
           updateFields.profileImage = url;
         }
-      }
+        }
 
       const resp = await this.authService.updateArtist(username, updateFields)
       if (resp){
