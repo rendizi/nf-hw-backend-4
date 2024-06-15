@@ -8,7 +8,7 @@ you. The task is to make your own spotify clone. Here we gooo
 ### Tasks
 
 - [x] Create a CRUD for songs with cloud storage
-- [ ] Create a front for song implementation(take data from backend)
+- [x] Create a front for song implementation(take data from backend)
 - [x] Implement user authentication and authorization
 
 ## 🥈 Medium Level
@@ -30,5 +30,5 @@ you. The task is to make your own spotify clone. Here we gooo
 
 ### Tasks
 
-- [ ] Create Favorites musics and playlists
-- [ ] Create playlist implementation in backend and frontend
+- [x] Create Favorites musics and playlists
+- [x] Create playlist implementation in backend and frontend
