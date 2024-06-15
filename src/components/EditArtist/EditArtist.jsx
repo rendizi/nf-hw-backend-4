@@ -11,7 +11,7 @@ const EditArtist = ({id}) => {
     const handleUpload = async (e) => {
         e.preventDefault();
 
-        const url = `https://nf-hw-backend-4-production.up.railway.app/api/v5/s/${id}?description=${description}`;
+        const url = `https://nf-hw-backend-4-production.up.railway.app/api/v5/u/${id}?description=${description}`;
 
         const formData = new FormData();
         formData.append("profileImage", imageFile);
