@@ -119,7 +119,7 @@ export const Home = () => {
       
       
      
-      <SongPlayer song={song} socket={socket}/>
+      <SongPlayer song={song} setSong={setSong} socket={socket}/>
     </div>
   );
 };
