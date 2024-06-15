@@ -8,18 +8,31 @@ import { ToastContainer, toast } from 'react-toastify';
 
 export const Playlistsection = ({ title }) => {
   const [playlists, setPlaylists] = useState([])
-  useEffect(()=>{
-    const some = async() => {
-      try{
-    const resp = await axios.get("https://nf-hw-backend-4-production.up.railway.app/api/v5/p/p/bibolmashina?limit=4")
-    setPlaylists(resp.data)
-    }catch (err){
-      toast(err)
-    }
-    }
-    some()
+  const [songs, setSongs] = useState([])
 
-  },[])
+  useEffect(() => {
+    const fetchPlaylistsAndSongs = async () => {
+      try {
+        const resp = await axios.get("https://nf-hw-backend-4-production.up.railway.app/api/v5/p/p/bibolmashina?limit=4");
+        const fetchedPlaylists = resp.data;
+        setPlaylists(fetchedPlaylists);
+
+        const songsArray = await Promise.all(
+          fetchedPlaylists.map(async (playlist) => {
+            const songsResp = await axios.get(`https://nf-hw-backend-4-production.up.railway.app/api/v5/p/song/${playlist._id}`);
+            return songsResp.data; // Assuming songs are returned as data
+          })
+        );
+
+        setSongs((prev)=>[...prev,songsArray]);
+
+      } catch (err) {
+        toast(err.message || 'Something went wrong!');
+      }
+    };
+
+    fetchPlaylistsAndSongs();
+  }, []);
 
   return (
     <div className="mb-8">
@@ -35,12 +48,12 @@ export const Playlistsection = ({ title }) => {
         </Link>
       </div>
       <div className="horizontal-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-        {playlists && playlists.map((playlist, index) => (
+        {songs && songs.map((playlist, index) => (
           <PlaylistsCard
             key={index}
             title={playlist.title}
             description={playlist.description}
-            imageUrl={playlist.imageUrl}
+            imageUrl={playlist.image}
           />
         ))}
       </div>

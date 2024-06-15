@@ -8,6 +8,8 @@
 profileImages
 songs-baglanov
 
+.env 
+
 # testing
 /coverage
 
