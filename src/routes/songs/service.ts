@@ -6,7 +6,6 @@ export class SocketIOService {
   private static server: Server | undefined;
 
   private constructor() {
-    // Private constructor ensures singleton instance
   }
 
   static instance(): SocketIOService {
