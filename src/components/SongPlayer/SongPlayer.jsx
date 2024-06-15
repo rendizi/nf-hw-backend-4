@@ -24,7 +24,7 @@ const SongPlayer = ({ song, setSong, socket }) => {
                 socket.emit("send-stop-listens-to", localStorage.getItem("token"));
             };
         }
-    }, [song]);
+    }, [song,socket]);
 
     const handleSongEnd = () => {
         setSong(null); 
