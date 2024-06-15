@@ -1,10 +1,8 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IPlaylistSongs extends Document {
-  title: string 
-  author: string 
-  image: string 
-  description: string 
+  playlistId: string 
+  songId: string 
 }
 
 const PlaylistSongsSchema: Schema = new Schema({

@@ -33,8 +33,9 @@ class PlaylistController{
                 return;
             }
             const {songId, playlistId} = req.body 
+
             const resp = await this.playlistService.addSong(playlistId, songId, author)
-            return resp 
+            res.status(200).send(resp)
         }catch (err){
             res.status(400).send({message:`${err}`})
         }

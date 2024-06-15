@@ -13,7 +13,7 @@ playlistRouter.post('/add', authMiddleware, playlistController.addMusic )
 playlistRouter.delete('/', authMiddleware, playlistController.removePlaylist)
 playlistRouter.delete('/song', authMiddleware, playlistController.removeSong)
 playlistRouter.get('/song/:id', playlistController.get)
-playlistRouter.get('/p/:id', playlistController.getPlaylists)
+playlistRouter.get('/p/', playlistController.getPlaylists)
 
 
 export default playlistRouter

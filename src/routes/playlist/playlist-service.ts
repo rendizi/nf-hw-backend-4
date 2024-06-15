@@ -35,6 +35,7 @@ class PlaylistService{
             playlistId,
             songId
         });
+
         await newPlaylistSong.save();
     
         const song = await Song.findById(songId);
@@ -84,20 +85,22 @@ class PlaylistService{
     }
 
     async getPlaylistWithSongs(playlistId: string, page: number, limit: number) {
-        const playlist = await Playlist.findById(playlistId)
-            .populate({
-                path: 'songs',
-                options: {
-                    limit: limit,
-                    skip: (page - 1) * limit
-                }
-            });
-    
+        const playlist = await Playlist.findById(playlistId);
         if (!playlist) {
-            throw new Error("not found");
+            throw new Error("Playlist not found");
         }
     
-        return playlist;
+        const playlistSongs = await PlaylistSongs.find({ playlistId: playlistId })
+            .populate('songId')
+            .limit(limit)
+            .skip((page - 1) * limit);
+    
+        const songs = playlistSongs.map(ps => ps.songId);
+    
+        return {
+            ...playlist.toObject(),
+            songs: songs
+        };
     }
 
     async getPlaylists(page: number, limit: number){
