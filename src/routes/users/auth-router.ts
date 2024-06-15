@@ -25,7 +25,7 @@ authRouter.post('/unlike/:id', authMiddleware, authController.unlike)
 authRouter.post('/liked', authMiddleware, authController.liked)
 
 
-authRouter.get('/protected', authMiddleware, (req, res) => {
+authRouter.post('/protected', authMiddleware, (req, res) => {
   res.json({ message: 'You have access to this route!' })
 })
 
