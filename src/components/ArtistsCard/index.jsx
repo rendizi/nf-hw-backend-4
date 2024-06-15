@@ -3,12 +3,20 @@ import { RiEdit2Fill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import EditArtist from "../EditArtist/EditArtist";
+import ArtisModal from "../ArtisModal/ArtistModal";
 
 export const ArtistsCard = ({ title, description, imageUrl,_id }) => {
   const modal_id = `privet_kak_dela_${_id}`
   return (
     <button
       className="bg-main-lg rounded-lg p-4 hover:bg-main-lgHover transition-all group"
+      onClick={()=>{
+        try{
+          document.getElementById(`another-${_id}`).show()
+        }catch (err){
+          toast.error(err)
+        }
+      }}
     >
       <div className="mb-4 relative flex justify-center items-center" >
         <img
@@ -38,6 +46,14 @@ export const ArtistsCard = ({ title, description, imageUrl,_id }) => {
       <dialog id={modal_id} className="modal">
         <div className="modal-box">
           <EditArtist _id={_id}/>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+      <dialog id={`another-${_id}`} className="modal">
+        <div className="modal-box">
+          <ArtisModal id={_id}/>
         </div>
         <form method="dialog" className="modal-backdrop">
           <button>close</button>
