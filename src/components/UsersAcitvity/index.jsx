@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
-const socket = io("https://nf-hw-backend-4-production.up.railway.app");
 
-export default function UsersActivity() {
+export default function UsersActivity({socket}) {
   const [listens, setListens] = useState([]);
 
   useEffect(() => {
     socket.on("listens-to", ({ username, title, author }) => {
+      console.log("listen", username )
       const userExists = listens.some((user) => user.username === username);
 
       if (userExists) {
@@ -28,7 +28,7 @@ export default function UsersActivity() {
       socket.off("listens-to");
       socket.off("stop-listens-to");
     };
-  }, [listens]); 
+  }, []); 
 
   return (
     <div className="border-t border-gray-700 mt-8 pt-4">

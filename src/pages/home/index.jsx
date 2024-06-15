@@ -16,6 +16,8 @@ import EditArtist from "../../components/EditArtist/EditArtist";
 import ArtistsModal from "../../components/ArtistsModal/ArtistsModal";
 import SongSearch from "../../components/SongSearch/SongSearch";
 import AddSong from "../../components/AddSong/AddSong";
+import { io } from "socket.io-client";
+const socket = io("https://nf-hw-backend-4-production.up.railway.app");
 
 export const Home = () => {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -63,9 +65,9 @@ export const Home = () => {
   return (
     <div className="min-h-screen text-gray-300">
       <Header setShowSidebar={setShowSidebar} signedIn={signedIn}/>
-      <Sidebar showSidebar={showSidebar} setShowSidebar={setShowSidebar} setId={setId} setSong={setSong} />
+      <Sidebar showSidebar={showSidebar} setShowSidebar={setShowSidebar} setId={setId} setSong={setSong} socket={socket} />
       <div className="bg-custom-section pt-28 md:pl-72 p-8">
-        <Artistsection></Artistsection>
+        <Artistsection setSong={setSong}></Artistsection>
         <Playlistsection setId={setId} setInfo={setInfo} setSong={setSong}></Playlistsection>
         <Footer></Footer>
       </div>
@@ -117,7 +119,7 @@ export const Home = () => {
       
       
      
-      <SongPlayer song={song}/>
+      <SongPlayer song={song} socket={socket}/>
     </div>
   );
 };

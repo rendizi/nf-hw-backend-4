@@ -6,7 +6,7 @@ import axios from "axios"
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
-export const Artistsection = ({ title }) => {
+export const Artistsection = ({ setSong }) => {
   const [artists, setArtists] = useState([]);
 
   useEffect(() => {
@@ -63,6 +63,7 @@ export const Artistsection = ({ title }) => {
             description={artist.bio}
             imageUrl={artist.profileImage}
             _id = {artist._id}
+            setSong={setSong}
           />
         ))}
       </div>

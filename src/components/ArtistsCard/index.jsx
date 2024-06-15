@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import EditArtist from "../EditArtist/EditArtist";
 import ArtisModal from "../ArtisModal/ArtistModal";
 
-export const ArtistsCard = ({ title, description, imageUrl,_id }) => {
+export const ArtistsCard = ({ title, description, imageUrl,_id ,setSong}) => {
   const modal_id = `privet_kak_dela_${_id}`
   return (
     <button
@@ -53,7 +53,7 @@ export const ArtistsCard = ({ title, description, imageUrl,_id }) => {
       </dialog>
       <dialog id={`another-${_id}`} className="modal">
         <div className="modal-box">
-          <ArtisModal id={_id}/>
+          <ArtisModal id={_id} setSong={setSong}/>
         </div>
         <form method="dialog" className="modal-backdrop">
           <button>close</button>

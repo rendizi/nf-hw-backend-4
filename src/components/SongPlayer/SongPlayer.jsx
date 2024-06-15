@@ -3,16 +3,29 @@ import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
+import { io } from "socket.io-client";
 
-const SongPlayer = ({ song }) => {
+const SongPlayer = ({ song, socket}) => {
     const [liked, setLiked] = useState(false); 
     const [audioKey, setAudioKey] = useState(""); 
 
     useEffect(() => {
         if (song) {
             setAudioKey(song._id);
+            socket.emit("send-listens-to", localStorage.getItem("token") | "",
+                {listens: {
+                    username: localStorage.getItem("username"),
+                    title: song.title,
+                    author: song.author
+                }
+            });
+            
+            return () => {
+                socket.emit("send-stop-listens-to", localStorage.getItem("token"));
+            };
         }
     }, [song]);
+    
 
     const handleLike = async () => {
         try {
@@ -39,7 +52,7 @@ const SongPlayer = ({ song }) => {
                     <h2 className="text-white text-xl font-semibold">{song.title}</h2>
                     <p className="text-gray-300">by {song.author}</p>
                 </div>
-                <audio key={audioKey} controls className="flex-1 ml-4">
+                <audio key={audioKey} controls className="flex-1 ml-4" autoPlay>
                     <source src={song.song} type="audio/mpeg" />
                     Your browser does not support the audio element.
                 </audio>

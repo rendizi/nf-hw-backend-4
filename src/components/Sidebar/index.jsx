@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import SongSearch from "../SongSearch/SongSearch";
 import FavSongs from "../FavSongs/FavSongs";
 
-const Sidebar = ({ showSidebar, setShowSidebar, setSong }) => {
+const Sidebar = ({ showSidebar, setShowSidebar, setSong,socket }) => {
 
   const show = () => {
     try{
@@ -108,7 +108,7 @@ const Sidebar = ({ showSidebar, setShowSidebar, setSong }) => {
             </li>
           </ul>
         </nav>
-        <UsersActivity />
+        <UsersActivity socket={socket} />
       </div>
       <div>
         <nav>
