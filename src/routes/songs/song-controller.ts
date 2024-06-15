@@ -58,15 +58,15 @@ class SongController{
             const title = req.query.title as string;
             let imageUrl: string | null = null;
 
-            if ((req as any).files) {
-              const files = (req as any).files;
-              if (files.songPreview){
-                const filePath = files.songPreview[0].path; 
-                const key = `songs-baglanov/${_id}.png`;
-                const url = await this.s3.uploadFile(filePath, key); 
-                imageUrl = url;
+            if ((req as any).file) {
+              const file = (req as any).file;
+              if (file) {
+                  const filePath = file.path;
+                  const key = `songs-baglanov/${_id}.png`;
+                  const url = await this.s3.uploadFile(filePath, key);
+                  imageUrl = url;
               }
-              }
+          }
 
             const updatedSong = await this.songService.updateSong(_id, title, imageUrl);
             res.status(200).send(updatedSong);
