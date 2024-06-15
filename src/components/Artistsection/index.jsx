@@ -4,6 +4,7 @@ import { ArtistsCard } from "../ArtistsCard";
 import "./Artistsection.css";
 import axios from "axios"
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 export const Artistsection = ({ title }) => {
   const [artists, setArtists] = useState([]);
@@ -27,12 +28,17 @@ export const Artistsection = ({ title }) => {
         <Link to="/" className="text-2xl font-bold text-white hover:underline">
           Popular artists
         </Link>
-        <Link
-          to="/"
-          className="text-sm font-bold tracking-[2px] hover:underline"
+        <button
+          onClick={()=>{
+            try{
+              document.getElementById("my_modal_4").show()
+            }catch (err){
+              console.log(err)
+            }
+          }}          className="text-sm font-bold tracking-[2px] hover:underline"
         >
           Show all
-        </Link>
+        </button>
       </div>
       <div className="horizontal-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6">
         {artists && artists.map((artist, index) => (
@@ -41,6 +47,7 @@ export const Artistsection = ({ title }) => {
             title={artist.username}
             description={artist.bio}
             imageUrl={artist.profileImage}
+            _id = {artist._id}
           />
         ))}
       </div>

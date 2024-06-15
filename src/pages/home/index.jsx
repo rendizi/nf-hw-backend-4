@@ -7,11 +7,20 @@ import "./Home.css";
 import { Footer } from "../../components/footer";
 import { useEffect } from "react";
 import axios from "axios";
+import Upload from "../../components/Upload/Upload";
+import CreatePlaylist from "../../components/CreatePlaylist/CreatePlaylist";
+import SongList from "../../components/SongList/SongList";
+import SongPlayer from "../../components/SongPlayer/SongPlayer";
+import CreateArtist from "../../components/CreateArtist/CreateArtist";
+import EditArtist from "../../components/EditArtist/EditArtist";
 
 export const Home = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [signedIn, setSignedIn] = useState(false)
-
+  const [id, setId] = useState(null)
+  const [info, setInfo] = useState(null)
+  const [song, setSong] = useState(null)
+  
   useEffect(() => {
     const fetchToken = async () => {
       try {
@@ -49,15 +58,47 @@ export const Home = () => {
   return (
     <div className="min-h-screen text-gray-300">
       <Header setShowSidebar={setShowSidebar} signedIn={signedIn}/>
-      <Sidebar showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
+      <Sidebar showSidebar={showSidebar} setShowSidebar={setShowSidebar} setId={setId} />
       <div className="bg-custom-section pt-28 md:pl-72 p-8">
         <Artistsection></Artistsection>
-        <Playlistsection></Playlistsection>
-        <Playlistsection></Playlistsection>
-        <Playlistsection></Playlistsection>
-        <Playlistsection></Playlistsection>
+        <Playlistsection setId={setId} setInfo={setInfo} setSong={setSong}></Playlistsection>
         <Footer></Footer>
       </div>
+      <dialog id="my_modal_1" className="modal">
+        <div className="modal-box">
+          <SongList id={id} info={info} setSong={setSong
+          }/>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+      <dialog id="my_modal_2" className="modal">
+        <div className="modal-box">
+          <Upload />
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+      <dialog id="my_modal_3" className="modal">
+        <div className="modal-box">
+          <CreatePlaylist />
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+      <dialog id="my_modal_4" className="modal">
+        <div className="modal-box">
+          <CreateArtist/>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+     
+      <SongPlayer song={song}/>
     </div>
   );
 };

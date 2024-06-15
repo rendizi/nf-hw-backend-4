@@ -7,6 +7,23 @@ import { Link } from "react-router-dom";
 import UsersActivity from "../UsersAcitvity";
 
 const Sidebar = ({ showSidebar, setShowSidebar }) => {
+
+  const show = () => {
+    try{
+      document.getElementById('my_modal_2').show()
+    }catch (err){
+      console.log(err)
+    }
+  }
+
+  const show_playlist = () => {
+    try{
+      document.getElementById('my_modal_3').show()
+    }catch (err){
+      console.log(err)
+    }
+  }
+
   return (
     <div
       className={`bg-black fixed top-0 w-64 h-full p-6 flex flex-col justify-between ${
@@ -57,12 +74,20 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
               </Link>
             </li>
             <li>
-              <Link
-                to="#"
+              <button
+                onClick={show_playlist}
                 className="flex items-center gap-4 hover:text-gray-100 transition-colors"
               >
                 <RiAddBoxLine className="text-2xl" /> Create a Playlist
-              </Link>
+              </button>
+            </li>
+            <li>
+              <button
+              onClick={show}
+                className="flex items-center gap-4 hover:text-gray-100 transition-colors"
+              >
+                <RiAddBoxLine className="text-2xl" /> Upload new song
+              </button>
             </li>
             <li>
               <Link
@@ -98,6 +123,8 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
           </ul>
         </nav>
       </div>
+
+      
     </div>
   );
 };
