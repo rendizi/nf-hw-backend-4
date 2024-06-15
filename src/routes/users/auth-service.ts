@@ -200,7 +200,7 @@ class AuthService {
     const likes = await FavoriteModel.find({ userId })
         .skip(skip)
         .limit(limit)
-        .exec();
+        .populate('songId')
 
     return likes;
   }
