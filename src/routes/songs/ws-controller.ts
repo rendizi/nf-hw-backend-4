@@ -14,7 +14,7 @@ export default (expressServer) => {
   const io = SocketIOService.instance().getServer();
 
   io.on("connection", async (socket) => {
-    socket.on("send-listens-to", async (token,listens) => {
+    socket.on("send-listens-to", async (token: string,listens: listens) => {
         const tok = token.split(' ')[0]
         const payload = authService.verifyJwt(tok)
       
