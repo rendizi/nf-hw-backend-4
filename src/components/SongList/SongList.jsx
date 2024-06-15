@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Song from "../SongPlayer/Song";
-import { toast } from "react-toastify";
 
 const SongList = ({ id, info, setSong }) => {
     const [songs, setSongs] = useState([]);

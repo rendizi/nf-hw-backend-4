@@ -12,10 +12,7 @@ import CreatePlaylist from "../../components/CreatePlaylist/CreatePlaylist";
 import SongList from "../../components/SongList/SongList";
 import SongPlayer from "../../components/SongPlayer/SongPlayer";
 import CreateArtist from "../../components/CreateArtist/CreateArtist";
-import EditArtist from "../../components/EditArtist/EditArtist";
 import ArtistsModal from "../../components/ArtistsModal/ArtistsModal";
-import SongSearch from "../../components/SongSearch/SongSearch";
-import AddSong from "../../components/AddSong/AddSong";
 import { io } from "socket.io-client";
 const socket = io("https://nf-hw-backend-4-production.up.railway.app");
 

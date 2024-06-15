@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { PlaylistsCard } from "../PlaylistCard";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { ToastContainer, toast } from 'react-toastify';
+import {  toast } from 'react-toastify';
 import AddSong from "../AddSong/AddSong";
 
 

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { BiTrophy } from "react-icons/bi";
 import { toast } from "react-toastify";
 
 const ArtistsModal = () => {

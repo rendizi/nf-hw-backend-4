@@ -4,7 +4,6 @@ import { ArtistsCard } from "../ArtistsCard";
 import "./Artistsection.css";
 import axios from "axios"
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
 
 export const Artistsection = ({ setSong }) => {
   const [artists, setArtists] = useState([]);

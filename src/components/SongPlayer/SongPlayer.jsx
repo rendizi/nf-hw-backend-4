@@ -3,13 +3,11 @@ import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
-import { io } from "socket.io-client";
 
 const SongPlayer = ({ song, setSong, socket }) => {
     const [liked, setLiked] = useState(false);
     const [audioKey, setAudioKey] = useState("");
     const audioRef = useRef();
-    const [isPlaying, setIsPlaying] = useState(false);
 
     useEffect(() => {
         if (song) {

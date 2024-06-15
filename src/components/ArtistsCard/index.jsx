@@ -1,6 +1,5 @@
 import React from "react";
 import { RiEdit2Fill } from "react-icons/ri";
-import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import EditArtist from "../EditArtist/EditArtist";
 import ArtisModal from "../ArtisModal/ArtistModal";
