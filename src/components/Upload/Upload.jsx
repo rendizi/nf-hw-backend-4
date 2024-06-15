@@ -9,6 +9,9 @@ const Upload = () => {
     const [songFile, setSongFile] = useState(null);
     const [imageFile, setImageFile] = useState(null);
     const [isLoading, setLoading] = useState(false); 
+    const [uploadProgress, setUploadProgress] = useState(0);
+const [totalUploadSize, setTotalUploadSize] = useState(0);
+
 
     const handleUpload = async (e) => {
         e.preventDefault();
@@ -27,7 +30,15 @@ const Upload = () => {
         try {
             setLoading(true); 
 
-            const response = await axios.post(uploadUrl, formData);
+            const response = await axios.post(uploadUrl, formData, {
+                onUploadProgress: (progressEvent) => {
+                    const { loaded, total } = progressEvent;
+                    const percentCompleted = Math.round((loaded * 100) / total);
+                    setUploadProgress(percentCompleted);
+                    setTotalUploadSize(total);
+                },
+            });
+            
 
             if (response.status === 200) {
                 toast("Upload successful!");
@@ -96,6 +107,18 @@ const Upload = () => {
                     </form>
                 </div>
             </div>
+            {isLoading && (
+    <div className="mt-4">
+        <p>Uploading...</p>
+        <progress className="progress" value={uploadProgress} max="100">
+            {uploadProgress}%
+        </progress>
+        <p>
+            {uploadProgress}% completed ({(totalUploadSize / 1000000).toFixed(2)} MB)
+        </p>
+    </div>
+)}
+
         </div>
     );
 };

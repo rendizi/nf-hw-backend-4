@@ -28,6 +28,7 @@ export const Artistsection = ({ title }) => {
         <Link to="/" className="text-2xl font-bold text-white hover:underline">
           Popular artists
         </Link>
+        <div>
         <button
           onClick={()=>{
             try{
@@ -37,8 +38,22 @@ export const Artistsection = ({ title }) => {
             }
           }}          className="text-sm font-bold tracking-[2px] hover:underline"
         >
+          Add new
+        </button>
+        <button
+          onClick={()=>{
+            try{
+              document.getElementById("my_modal_6").show()
+            }catch (err){
+              console.log(err)
+            }
+          }}          className="text-sm font-bold tracking-[2px] hover:underline ml-5"
+        >
           Show all
         </button>
+        </div>
+        
+        
       </div>
       <div className="horizontal-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6">
         {artists && artists.map((artist, index) => (

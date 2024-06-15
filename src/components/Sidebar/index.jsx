@@ -5,8 +5,10 @@ import { HiMagnifyingGlass } from "react-icons/hi2";
 import { RiAddBoxLine, RiCloseLine, RiHeartFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import UsersActivity from "../UsersAcitvity";
+import { toast } from "react-toastify";
+import SongSearch from "../SongSearch/SongSearch";
 
-const Sidebar = ({ showSidebar, setShowSidebar }) => {
+const Sidebar = ({ showSidebar, setShowSidebar, setSong }) => {
 
   const show = () => {
     try{
@@ -58,12 +60,20 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
               </Link>
             </li>
             <li>
-              <Link
-                to="#"
+              <button
+                onClick={
+                  ()=>{
+                    try{
+                      document.getElementById("my_modal_7").show()
+                    }catch (err){
+                      toast(err)
+                    }
+                  }
+                }
                 className="flex items-center gap-4 hover:text-gray-100 transition-colors"
               >
                 <HiMagnifyingGlass className="text-2xl" /> Search
-              </Link>
+              </button>
             </li>
             <li className="mb-8">
               <Link
@@ -124,7 +134,14 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
         </nav>
       </div>
 
-      
+      <dialog id="my_modal_7" className="modal">
+        <div className="modal-box">
+          <SongSearch setSong={setSong}/>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
     </div>
   );
 };

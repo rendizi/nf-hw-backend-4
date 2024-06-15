@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import EditArtist from "../EditArtist/EditArtist";
 
 export const ArtistsCard = ({ title, description, imageUrl,_id }) => {
+  const modal_id = `privet_kak_dela_${_id}`
   return (
     <button
       className="bg-main-lg rounded-lg p-4 hover:bg-main-lgHover transition-all group"
@@ -19,7 +20,7 @@ export const ArtistsCard = ({ title, description, imageUrl,_id }) => {
         onClick={
           () => {
             try{
-              document.getElementById("my_modal_5").show()
+              document.getElementById(modal_id).show()
             }catch (err){
               console.error(err)
               toast(err)
@@ -34,7 +35,7 @@ export const ArtistsCard = ({ title, description, imageUrl,_id }) => {
         <h5 className="font-medium text-gray-100 mb-2">{title}</h5>
         <p className="text-gray-400 text-sm w-[18ch]">{description}</p>
       </div>
-      <dialog id="my_modal_5" className="modal">
+      <dialog id={modal_id} className="modal">
         <div className="modal-box">
           <EditArtist _id={_id}/>
         </div>

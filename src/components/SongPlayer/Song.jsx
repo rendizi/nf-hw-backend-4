@@ -3,8 +3,8 @@ import React from "react";
 const Song = ({ song, setSong }) => {
     return (
         song && (
-<div className="p-4 rounded-lg shadow-md max-w-lg mx-auto flex items-center space-x-4" onClick={()=>setSong(song)}>
-                <img
+<div className="p-4 rounded-lg shadow-md max-w-lg mx-auto flex items-center space-x-4" onClick={() => setSong({ ...song, author: song.author.username })}>
+<img
                     src={song.image}
                     className="w-10 h-10 rounded-full object-cover"
                     alt="Song cover"

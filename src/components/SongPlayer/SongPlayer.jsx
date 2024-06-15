@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios"; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
@@ -6,13 +6,20 @@ import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 
 const SongPlayer = ({ song }) => {
     const [liked, setLiked] = useState(false); 
+    const [audioKey, setAudioKey] = useState(""); 
+
+    useEffect(() => {
+        if (song) {
+            setAudioKey(song._id);
+        }
+    }, [song]);
 
     const handleLike = async () => {
         try {
             if (!liked) {
-                await axios.post(`https://nf-hw-backend-4-production.up.railway.app/api/v5/u/like/${song._id}`, null, {headers:{Authorization: localStorage.getItem("token")}});
+                await axios.post(`https://nf-hw-backend-4-production.up.railway.app/api/v5/u/like/${song._id}`, null, { headers: { Authorization: localStorage.getItem("token") }});
             } else {
-                await axios.post(`https://nf-hw-backend-4-production.up.railway.app/api/v5/u/unlike/${song._id}`, null, {headers:{Authorization: localStorage.getItem("token")}});
+                await axios.post(`https://nf-hw-backend-4-production.up.railway.app/api/v5/u/unlike/${song._id}`, null, { headers: { Authorization: localStorage.getItem("token") }});
             }
             setLiked(!liked); 
         } catch (error) {
@@ -32,7 +39,7 @@ const SongPlayer = ({ song }) => {
                     <h2 className="text-white text-xl font-semibold">{song.title}</h2>
                     <p className="text-gray-300">by {song.author}</p>
                 </div>
-                <audio controls className="flex-1 ml-4">
+                <audio key={audioKey} controls className="flex-1 ml-4">
                     <source src={song.song} type="audio/mpeg" />
                     Your browser does not support the audio element.
                 </audio>

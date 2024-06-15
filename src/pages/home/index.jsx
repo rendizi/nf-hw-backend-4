@@ -13,6 +13,9 @@ import SongList from "../../components/SongList/SongList";
 import SongPlayer from "../../components/SongPlayer/SongPlayer";
 import CreateArtist from "../../components/CreateArtist/CreateArtist";
 import EditArtist from "../../components/EditArtist/EditArtist";
+import ArtistsModal from "../../components/ArtistsModal/ArtistsModal";
+import SongSearch from "../../components/SongSearch/SongSearch";
+import AddSong from "../../components/AddSong/AddSong";
 
 export const Home = () => {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -55,10 +58,12 @@ export const Home = () => {
     fetchToken();
   }, []);
 
+  useEffect(()=>console.log(song),[song])
+
   return (
     <div className="min-h-screen text-gray-300">
       <Header setShowSidebar={setShowSidebar} signedIn={signedIn}/>
-      <Sidebar showSidebar={showSidebar} setShowSidebar={setShowSidebar} setId={setId} />
+      <Sidebar showSidebar={showSidebar} setShowSidebar={setShowSidebar} setId={setId} setSong={setSong} />
       <div className="bg-custom-section pt-28 md:pl-72 p-8">
         <Artistsection></Artistsection>
         <Playlistsection setId={setId} setInfo={setInfo} setSong={setSong}></Playlistsection>
@@ -97,6 +102,18 @@ export const Home = () => {
           <button>close</button>
         </form>
       </dialog>
+
+      <dialog id="my_modal_6" className="modal">
+        <div className="modal-box">
+          <ArtistsModal />
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+
+      
+      
      
       <SongPlayer song={song}/>
     </div>

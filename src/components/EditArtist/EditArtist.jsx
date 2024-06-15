@@ -4,17 +4,18 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 const EditArtist = ({_id}) => {
-    const [description, setDescription] = useState("");
+    const [bio, setDescription] = useState("");
     const [imageFile, setImageFile] = useState(null);
     const [isLoading, setLoading] = useState(false); 
 
     const handleUpload = async (e) => {
         e.preventDefault();
 
-        const url = `https://nf-hw-backend-4-production.up.railway.app/api/v5/u/${_id}?description=${description}`;
+        const url = `https://nf-hw-backend-4-production.up.railway.app/api/v5/u/${_id}`;
 
         const formData = new FormData();
         formData.append("profileImage", imageFile);
+        formData.append("bio", bio)
 
         try {
             setLoading(true); 
@@ -35,6 +36,10 @@ const EditArtist = ({_id}) => {
         }
     };
 
+    const handleDelete = () => {
+        
+    }
+
     return (
         <div className="hero">
             <div className="hero-content flex-col lg:flex-row-reverse">
@@ -48,7 +53,7 @@ const EditArtist = ({_id}) => {
                                 type="text"
                                 placeholder="description"
                                 className="input input-bordered"
-                                value={description}
+                                value={bio}
                                 onChange={(e) => setDescription(e.target.value)}
                                 required
                             />
@@ -70,7 +75,14 @@ const EditArtist = ({_id}) => {
                                 className={`btn btn-primary ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 disabled={isLoading}
                             >
-                                {isLoading ? 'Loading...' : 'Upload'}
+                                {isLoading ? 'Loading...' : 'Update'}
+                            </button>
+                            <button
+                                type="button"
+                                className={`btn btn-error mt-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                disabled={isLoading}
+                            >
+                                {isLoading ? 'Loading...' : 'Delete'}
                             </button>
                         </div>
                     </form>
