@@ -38,7 +38,8 @@ export const Playlistsection = ({ setId, setInfo, setSong }) => {
   return (
     <div className="mb-8">
       {playlists && playlists.map((el, index) => 
-      <div>      <div className="flex items-center justify-between mb-8" key={index}>
+      <div key={index}>       
+        <div className="flex items-center justify-between mb-8" >
       <Link to="/" className="text-2xl font-bold text-white hover:underline">
         {el.title}
       </Link>

@@ -19,12 +19,12 @@ const SearchAuthor = ({setAuthorL}) => {
 
     return (
         <div>
-            <label class="label">
-                <span class="label-text">Author</span>
+            <label className="label">
+                <span className="label-text">Author</span>
             </label>
-            <div class="flex items-center space-x-4">
-                <input type="text" placeholder="Type here" class="input input-bordered max-w-xs" onChange={(e)=>setAuthor(e.target.value)}/>
-                <button class="btn btn-primary" onClick={searchAuthor}>Search</button>
+            <div className="flex items-center space-x-4">
+                <input type="text" placeholder="Type here" className="input input-bordered max-w-xs" onChange={(e)=>setAuthor(e.target.value)}/>
+                <button className="btn btn-primary" onClick={searchAuthor}>Search</button>
             </div>
             {result && (
     <div className="flex items-center space-x-4 mt-5">
