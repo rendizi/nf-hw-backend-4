@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import UsersActivity from "../UsersAcitvity";
 import { toast } from "react-toastify";
 import SongSearch from "../SongSearch/SongSearch";
+import FavSongs from "../FavSongs/FavSongs";
 
 const Sidebar = ({ showSidebar, setShowSidebar, setSong }) => {
 
@@ -75,14 +76,6 @@ const Sidebar = ({ showSidebar, setShowSidebar, setSong }) => {
                 <HiMagnifyingGlass className="text-2xl" /> Search
               </button>
             </li>
-            <li className="mb-8">
-              <Link
-                to="#"
-                className="flex items-center gap-4 hover:text-gray-100 transition-colors"
-              >
-                <BiLibrary className="text-2xl" /> Library
-              </Link>
-            </li>
             <li>
               <button
                 onClick={show_playlist}
@@ -100,12 +93,18 @@ const Sidebar = ({ showSidebar, setShowSidebar, setSong }) => {
               </button>
             </li>
             <li>
-              <Link
-                to="#"
+              <button
+                onClick={()=>{
+                  try{
+                    document.getElementById("my_favs").show()
+                  }catch (err){
+                    toast(err)
+                  }
+                }}
                 className="flex items-center gap-4 hover:text-gray-100 transition-colors"
               >
                 <RiHeartFill className="text-2xl" /> Favorite Songs
-              </Link>
+              </button>
             </li>
           </ul>
         </nav>
@@ -137,6 +136,14 @@ const Sidebar = ({ showSidebar, setShowSidebar, setSong }) => {
       <dialog id="my_modal_7" className="modal">
         <div className="modal-box">
           <SongSearch setSong={setSong}/>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+      <dialog id="my_favs" className="modal">
+        <div className="modal-box">
+          <FavSongs/>
         </div>
         <form method="dialog" className="modal-backdrop">
           <button>close</button>

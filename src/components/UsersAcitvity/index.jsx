@@ -1,33 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { io } from "socket.io-client";
+const socket = io("https://nf-hw-backend-4-production.up.railway.app");
 
 export default function UsersActivity() {
+  const [listens, setListens] = useState([]);
+
+  useEffect(() => {
+    socket.on("listens-to", ({ username, title, author }) => {
+      const userExists = listens.some((user) => user.username === username);
+
+      if (userExists) {
+        const updatedListens = listens.map((user) =>
+          user.username === username ? { ...user, title, author } : user
+        );
+        setListens(updatedListens);
+      } else {
+        setListens([...listens, { username, title, author }]);
+      }
+    });
+
+    socket.on("stop-listens-to", ({ username }) => {
+      const updatedListens = listens.filter((user) => user.username !== username);
+      setListens(updatedListens);
+    });
+
+    return () => {
+      socket.off("listens-to");
+      socket.off("stop-listens-to");
+    };
+  }, [listens]); 
+
   return (
     <div className="border-t border-gray-700 mt-8 pt-4">
       <h4 className="text-white text-lg font-bold mb-4">Users Activity</h4>
       <div className="flex flex-col gap-y-4 overflow-y-auto" style={{ maxHeight: '300px' }}>
-        <div>
-          <h5 className="text-white font-bold">Current User</h5>
-          <p className="text-gray-400">Song Title • Artist Name</p>
-          <p className="text-gray-400">Listening Now</p>
-        </div>
-        <div>
-          <h5 className="text-white font-bold">uldana</h5>
-          <p className="text-gray-400">O.You Dombra Vibes • A.Z</p>
-          <p className="text-gray-400">O.You Dombra Vibes</p>
-          <p className="text-gray-400">8h ago</p>
-        </div>
-        <div>
-          <h5 className="text-white font-bold">kamazhayo</h5>
-          <p className="text-gray-400">esinde saqta • Kunzharyq</p>
-          <p className="text-gray-400">папа екеуіміздің плейлистіміз</p>
-          <p className="text-gray-400">8h ago</p>
-        </div>
-        <div>
-          <h5 className="text-white font-bold">IZ3KA</h5>
-          <p className="text-gray-400">そんないつも • Vaun</p>
-          <p className="text-gray-400">replica</p>
-          <p className="text-gray-400">5h ago</p>
-        </div>
+        {listens.map((user, index) => (
+          <div key={index}>
+            <h5 className="text-white font-bold">{user.username}</h5>
+            <p className="text-gray-400">{user.title} • {user.author}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

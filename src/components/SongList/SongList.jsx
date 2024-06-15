@@ -21,7 +21,6 @@ const SongList = ({ id, info, setSong }) => {
                 setSongs(filteredSongs);
             } catch (error) {
                 console.error("Error fetching songs:", error);
-                toast.error("Failed to fetch songs.");
             }
         };
 
