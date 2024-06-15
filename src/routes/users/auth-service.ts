@@ -132,9 +132,9 @@ class AuthService {
     }
   }
 
-  async updateArtist(username: string, updateFields: UpdateUserDto): Promise<boolean> {
+  async updateArtist(_id: string, updateFields: UpdateUserDto): Promise<boolean> {
     try {
-      const updateResult = await ArtistModel.updateOne({ username }, { ...updateFields }).exec();
+      const updateResult = await ArtistModel.updateOne({ _id }, { ...updateFields }).exec();
       if (updateResult.modifiedCount <= 1){
       return true }
       else{

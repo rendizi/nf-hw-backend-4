@@ -78,7 +78,7 @@ class AuthController {
 
   updateProfile = async(req: Request, res: Response):Promise<void> => {
     try{
-      const username = req.params.username 
+      const id = req.params.id 
       const updateFields: UpdateUserDto = {}
       const formData = req.body
       if (formData.bio){
@@ -88,13 +88,13 @@ class AuthController {
         const file = (req as any).file 
         if (file){
           const filePath = file.path; 
-          const key = `profileImages/${username}.png`;
+          const key = `profileImages/${id}.png`;
           const url = await this.s3.uploadFile(filePath, key); 
           updateFields.profileImage = url;
         }
         }
 
-      const resp = await this.authService.updateArtist(username, updateFields)
+      const resp = await this.authService.updateArtist(id, updateFields)
       if (resp){
         res.status(200).send({message:'Profile updated successfully'});
       }
