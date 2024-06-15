@@ -7,7 +7,7 @@ const authService = new AuthService()
 export default (expressServer) => {
   SocketIOService.instance().initialize(expressServer, {
     cors: {
-        origin: '*'    
+      origin: '*',
     },
   });
 
@@ -26,17 +26,37 @@ export default (expressServer) => {
 
         io.emit("listens-to",listens)
     });
-  });
+    socket.on("send-stop-listens-to", async(token) => {
+      const tok = token.split(' ')[0]
+      const payload = authService.verifyJwt(tok)
+    
+      if (!payload) {
+        return 
+      }
+
+      io.emit("stop-listens-to", payload.username)
+    })
+
+    socket.on("disconnect", async (token) => {
+      if (!token) {
+        return;
+      }
+  
+      const tok = token.split(' ')[0];
+      const payload = authService.verifyJwt(tok);
+  
+      if (!payload) {
+        return;
+      }
+  
+      io.emit("stop-listens-to", payload.username);
+    });
 
   return io;
-};
+});}
 
 interface listens{
     username: string;
     title: string;
-    url: string;
-    preview: string;
     author: string;
-    currect: number;
-    total: number;
 }

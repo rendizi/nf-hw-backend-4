@@ -22,6 +22,7 @@ authRouter.put('/:id', upload.single('profileImage'), authController.updateProfi
 authRouter.post('/like/:id', authMiddleware, authController.like)
 authRouter.post('/unlike/:id', authMiddleware, authController.unlike)
 authRouter.post('/liked', authMiddleware, authController.liked)
+authRouter.post('/artist/:id', authController.artistsSongs)
 
 
 authRouter.post('/protected', authMiddleware, (req, res) => {

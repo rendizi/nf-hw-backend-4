@@ -10,6 +10,7 @@ import { IFavorites } from './models/Favorites'
 import FavoriteModel from './models/Favorites'
 import { IArtist } from './models/Artist'
 import ArtistModel from './models/Artist'
+import Song, { ISong } from "../songs/models/Song"; // Adjust the import as per your file structure
 
 dotenv.config()
 
@@ -203,6 +204,11 @@ class AuthService {
         .populate('songId')
 
     return likes;
+  }
+
+  async artistsSongs(_id: string){
+    const resp = await Song.find({_id})
+    return resp 
   }
 
 }

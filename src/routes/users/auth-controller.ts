@@ -189,6 +189,16 @@ class AuthController {
     }
 
   }
+
+  artistsSongs = async(req: Request, res: Response):Promise<void> => {
+    const _id = req.params.id 
+    try{
+      const resp = await this.authService.artistsSongs(_id)
+      res.status(200).send(resp)
+    }catch (err){
+      res.status(400).send(err)
+    }
+  }
  }
 
 export default AuthController
