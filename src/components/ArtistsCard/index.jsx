@@ -36,7 +36,7 @@ export const ArtistsCard = ({ title, description, imageUrl,_id }) => {
       </div>
       <dialog id="my_modal_5" className="modal">
         <div className="modal-box">
-          <EditArtist id={_id}/>
+          <EditArtist _id={_id}/>
         </div>
         <form method="dialog" className="modal-backdrop">
           <button>close</button>

@@ -3,7 +3,7 @@ import SearchAuthor from "../SearchAuthor/SearchAuthor";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-const EditArtist = ({id}) => {
+const EditArtist = ({_id}) => {
     const [description, setDescription] = useState("");
     const [imageFile, setImageFile] = useState(null);
     const [isLoading, setLoading] = useState(false); 
@@ -11,7 +11,7 @@ const EditArtist = ({id}) => {
     const handleUpload = async (e) => {
         e.preventDefault();
 
-        const url = `https://nf-hw-backend-4-production.up.railway.app/api/v5/u/${id}?description=${description}`;
+        const url = `https://nf-hw-backend-4-production.up.railway.app/api/v5/u/${_id}?description=${description}`;
 
         const formData = new FormData();
         formData.append("profileImage", imageFile);
